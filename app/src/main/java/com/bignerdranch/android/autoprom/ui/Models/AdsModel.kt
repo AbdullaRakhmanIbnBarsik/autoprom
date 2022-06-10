@@ -6,5 +6,6 @@ data class AdsModel(
     val color: String,
     val year: Int,
     val city: String,
-    val date: String
+    val date: String,
+    val image: String
 );

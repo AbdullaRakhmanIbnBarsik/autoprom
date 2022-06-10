@@ -88,7 +88,8 @@ class HomeFragment : Fragment() {
                         jsonObject.getString("color"),
                         jsonObject.getInt("year"),
                         jsonObject.getString("city"),
-                        jsonObject.getString("date")
+                        jsonObject.getString("date"),
+                        jsonObject.getString("thumbs"),
                     )
                 );
             }

@@ -3,6 +3,7 @@ package com.bignerdranch.android.autoprom.ui.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.autoprom.R
@@ -19,6 +20,7 @@ class AdsAdapter(private val ads: MutableList<AdsModel>) :
         val yearTextView: TextView;
         val cityTextView: TextView;
         val dateTextView: TextView;
+        val imageView: ImageView;
 
         init {
             largeTextView = itemView.findViewById(R.id.name_ads);
@@ -27,6 +29,7 @@ class AdsAdapter(private val ads: MutableList<AdsModel>) :
             yearTextView = itemView.findViewById(R.id.year_ads);
             cityTextView = itemView.findViewById(R.id.city_ads);
             dateTextView = itemView.findViewById(R.id.date_ads);
+            imageView = itemView.findViewById(R.id.image_ads);
         }
     }
 
