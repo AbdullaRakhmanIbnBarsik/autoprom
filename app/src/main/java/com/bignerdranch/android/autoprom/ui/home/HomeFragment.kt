@@ -1,29 +1,25 @@
 package com.bignerdranch.android.autoprom.ui.home
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.autoprom.R
-import com.bignerdranch.android.autoprom.databinding.FragmentHomeBinding
+import com.bignerdranch.android.autoprom.ui.Models.AdsModel
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.BufferedInputStream
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class HomeFragment : Fragment() {
-
-    private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-
-    private var recyclerView: RecyclerView? = null
-    private var adapter: RecyclerView.Adapter<AdsAdapter.ViewHolder>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,32 +30,71 @@ class HomeFragment : Fragment() {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView);
 
-//        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(null)
-        recyclerView.adapter = AdsAdapter(fillList());
+
+        GetAdsTask(recyclerView).execute();
         return view
 //        return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
-    }
-
-    private fun fillList(): List<String> {
-        val data = mutableListOf<String>()
-        (0..30).forEach { i -> data.add("$i element") }
-        return data
     }
 
     override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(itemView, savedInstanceState)
-//        recycler_view.apply {
-//            // set a LinearLayoutManager to handle Android
-//            // RecyclerView behavior
-//            layoutManager = LinearLayoutManager(activity)
-//            // set the custom adapter to the RecyclerView
-//            adapter = RecyclerAdapter()
-//        }
     }
+
+    class GetAdsTask(recyclerView: RecyclerView) : AsyncTask<Unit, Unit, String>() {
+        val innerRecyclerView: RecyclerView = recyclerView;
+        override fun doInBackground(vararg params: Unit?): String? {
+            val url = URL("https://autoprom.tj/api/get")
+            val httpClient = url.openConnection() as HttpURLConnection
+            if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
+                try {
+                    val stream = BufferedInputStream(httpClient.inputStream)
+                    val data: String = readStream(inputStream = stream)
+                    return data
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    httpClient.disconnect()
+                }
+            } else {
+                println("ERROR ${httpClient.responseCode}")
+            }
+            return null
+        }
+
+        fun readStream(inputStream: BufferedInputStream): String {
+            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+            val stringBuilder = StringBuilder()
+            bufferedReader.forEachLine { stringBuilder.append(it) }
+            return stringBuilder.toString()
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result);
+
+            val adsModels: MutableList<AdsModel> = ArrayList()
+            val jsonArray: JSONArray = JSONArray(result);
+
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject: JSONObject = jsonArray.getJSONObject(i);
+                adsModels.add(
+                    AdsModel(
+                        jsonObject.getString("name"),
+                        jsonObject.getString("price"),
+                        jsonObject.getString("color"),
+                        jsonObject.getInt("year"),
+                        jsonObject.getString("city"),
+                        jsonObject.getString("date")
+                    )
+                );
+            }
+
+            innerRecyclerView.adapter = AdsAdapter(adsModels);
+        }
+    }
+
 }
