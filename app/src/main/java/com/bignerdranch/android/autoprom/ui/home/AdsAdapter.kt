@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.autoprom.R
 import com.bignerdranch.android.autoprom.ui.Models.AdsModel
+import com.bumptech.glide.Glide
 
 class AdsAdapter(private val ads: MutableList<AdsModel>) :
     RecyclerView.Adapter<AdsAdapter.ViewHolder>() {
@@ -31,6 +32,17 @@ class AdsAdapter(private val ads: MutableList<AdsModel>) :
             dateTextView = itemView.findViewById(R.id.date_ads);
             imageView = itemView.findViewById(R.id.image_ads);
         }
+
+        fun bind(property: AdsModel) {
+            largeTextView.text = property.name
+            costTextView.text = property.cost
+            colorTextView.text = property.color
+            yearTextView.text = property.year.toString()
+            cityTextView.text = property.city
+            dateTextView.text = property.date
+
+            Glide.with(itemView.context).load(property.image).centerCrop().into(imageView)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,12 +54,7 @@ class AdsAdapter(private val ads: MutableList<AdsModel>) :
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.largeTextView.text = ads[position].name
-        holder.costTextView.text = ads[position].cost
-        holder.colorTextView.text = ads[position].color
-        holder.yearTextView.text = ads[position].year.toString()
-        holder.cityTextView.text = ads[position].city
-        holder.dateTextView.text = ads[position].date
+        holder.bind(ads[position]);
     }
 
     override fun getItemCount(): Int {

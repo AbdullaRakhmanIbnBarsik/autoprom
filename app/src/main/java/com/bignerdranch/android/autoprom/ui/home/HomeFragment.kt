@@ -89,7 +89,7 @@ class HomeFragment : Fragment() {
                         jsonObject.getInt("year"),
                         jsonObject.getString("city"),
                         jsonObject.getString("date"),
-                        jsonObject.getString("thumbs"),
+                        "https://autoprom.tj/" + jsonObject.getString("thumbs"),
                     )
                 );
             }
