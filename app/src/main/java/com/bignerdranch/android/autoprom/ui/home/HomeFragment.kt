@@ -34,7 +34,6 @@ class HomeFragment : Fragment() {
 
         GetAdsTask(recyclerView).execute();
         return view
-//        return root
     }
 
     override fun onDestroyView() {
@@ -83,6 +82,7 @@ class HomeFragment : Fragment() {
                 val jsonObject: JSONObject = jsonArray.getJSONObject(i);
                 adsModels.add(
                     AdsModel(
+                        jsonObject.getInt("id"),
                         jsonObject.getString("name"),
                         jsonObject.getString("price"),
                         jsonObject.getString("color"),

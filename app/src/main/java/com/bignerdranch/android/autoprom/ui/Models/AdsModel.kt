@@ -1,6 +1,7 @@
 package com.bignerdranch.android.autoprom.ui.Models
 
 data class AdsModel(
+    val id:Int,
     val name: String,
     val cost: String,
     val color: String,

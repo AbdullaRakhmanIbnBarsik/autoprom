@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.autoprom.R
 import com.bignerdranch.android.autoprom.ui.Models.AdsModel
@@ -40,6 +41,10 @@ class AdsAdapter(private val ads: MutableList<AdsModel>) :
             yearTextView.text = property.year.toString()
             cityTextView.text = property.city
             dateTextView.text = property.date
+
+            itemView.setOnClickListener {
+                Toast.makeText(itemView.context, property.name, Toast.LENGTH_SHORT).show();
+            }
 
             Glide.with(itemView.context).load(property.image).centerCrop().into(imageView)
         }
